@@ -1,0 +1,222 @@
+﻿@page "/OA/Products"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Lista de Produtos</h3>
+
+<div>
+    <br />
+    <a href="/OA/Product/CreateProduct"><button class="btn btn-success">Criar Novo Produto</button></a>
+</div>
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Preço</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in products)
+            {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
+                <td>@item.ProductDescriptionOA.Description</td>
+                <td>
+                    <a href="/OA/Product/EditProduct/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                    <button class="btn btn-danger" @onclick="@(() => DeleteUser(item.Id))">Deletar</button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private string URL = "/v1/OA/ProductOA";
+    private List<ProductOA> products = new List<ProductOA>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var retProducts = await Http.GetFromJsonAsync<List<ProductOA>>(URL);
+
+        foreach (var item in retProducts)
+        {
+            products.Add(item);
+        }
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        await Http.DeleteAsync($"{URL}/{id}");
+        NavigationManager.NavigateTo("OA/ProductOA", true);
+    }
+
+}
+
+
+
+
+
+
+
+
+
+@page "/OA/Product/CreateProduct"
+@using System.Net.Http
+@inject HttpClient http
+@inject NavigationManager NavigationManager
+
+<h3>Cadastro de Produto</h3>
+
+<EditForm Model="@product" OnValidSubmit="CreateProductOA" @onreset="HandleReset">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <br />
+        <div class="row col-12">
+            <div class="col-5">
+                <label>Nome</label>
+                <InputText class="form-control" @bind-Value="@product.Name"></InputText>
+                <ValidationMessage For="@(() => product.Name)"></ValidationMessage>
+            </div>
+            <div class="col-5">
+                <label>Preço</label>
+                <InputText class="form-control" @bind-Value="@product.Price.ToString()"></InputText>
+                <ValidationMessage For="@(() => product.Price)"></ValidationMessage>
+            </div>
+            <div class="col-2">
+                <label>Title</label>
+                <InputSelect class="form-control" @bind-Value="@product.ProductDescriptionOAId">
+                    <option value="">Selecione...</option>
+                    @foreach (var opt in productDescriptions)
+                    {
+                        <option value="@opt.Id">@opt.Description</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => product.ProductDescriptionOAId)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="row col-12 d-flex justify-content-center">
+            <button class="btn btn-success" type="submit" style="margin-right:10px;">Salvar</button>
+            <button class="btn btn-secondary" type="reset">Cancelar</button>
+        </div>
+    </div>                                                                                                                                         
+</EditForm>
+
+@code {
+    private string URL = "/v1/OA/ProductOA";
+    private ProductOA product = new ProductOA();
+    private List<ProductDescriptionOA> productDescriptions = new List<ProductDescriptionOA>();
+    private EditContext editContext;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var retProducts = await http.GetFromJsonAsync<List<ProductDescriptionOA>>(URL);
+
+        foreach (var item in retProducts)
+        {
+            productDescriptions.Add(item);
+        }
+    }
+
+    private async Task CreateProductOA()
+    {
+        var newProduct = await http.PostAsJsonAsync(URL, product);
+        NavigationManager.NavigateTo("OA/Products");
+    }
+
+    private void HandleReset()
+    {
+        product = new ProductOA();
+        editContext = new EditContext(product);
+    }
+}
+
+@page "/OA/Product/Edit/{Item}"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+
+<h3>Editar Produto</h3>
+
+<EditForm Model="@product" OnValidSubmit="SubmitProduct" @onreset="HandleReset">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <br />
+        <div class="row col-12">
+            <div class="col-5">
+                <label>Nome</label>
+                <InputText class="form-control" @bind-Value="@product.Name"></InputText>
+                <ValidationMessage For="@(() => product.Name)"></ValidationMessage>
+            </div>
+            <div class="col-5">
+                <label>Preço</label>
+                <InputText class="form-control" @bind-Value="@product.Price.ToString()"></InputText>
+                <ValidationMessage For="@(() => product.Price)"></ValidationMessage>
+            </div>
+            <div class="col-2">
+                <label>Title</label>
+                <InputSelect class="form-control" @bind-Value="@product.ProductDescriptionOAId">
+                    <option value="">Selecione...</option>
+                    @foreach (var opt in productDescriptions)
+                    {
+                        <option value="@opt.Id">@opt.Description</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => product.ProductDescriptionOAId)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="row col-12 d-flex justify-content-center">
+            <button class="btn btn-success" type="submit" style="margin-right:10px;">Salvar</button>
+            <button class="btn btn-secondary" type="reset">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private string URL = "/v1/OA/ProductOA";
+    private ProductOA product = new ProductOA();
+    private EditContext editContext { get; set; }
+    private List<ProductDescriptionOA> productDescriptions = new List<ProductDescriptionOA>();
+
+    [Parameter]
+    public string Item { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var retProducts = await Http.GetFromJsonAsync<List<ProductDescriptionOA>>(URL);
+
+        foreach (var item in retProducts)
+        {
+            productDescriptions.Add(item);
+        }
+
+        product = await Http.GetFromJsonAsync<ProductOA>($"{URL}/ById?id={Item}");
+        editContext = new EditContext(product);
+    }
+
+    private async Task SubmitProduct()
+    {
+        await Http.PutAsJsonAsync(URL, product);
+        NavigationManager.NavigateTo("OA/Products");
+    }
+
+    private void HandleReset()
+    {
+        product = new ProductOA();
+        editContext = new EditContext(product);
+    }
+}
+
+
+
+

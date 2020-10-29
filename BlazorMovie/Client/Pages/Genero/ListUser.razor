@@ -1,0 +1,55 @@
+﻿@page  "/Genero/ListUser"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Lista de Usuários</h3>
+
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Titulo</th>
+                <th scope="col">Primeiro Nome</th>
+                <th scope="col">Ultimo Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in users)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>
+                        <a href="/Genero/EditUser/@item.Key.ToString()"><button class="btn btn-success">Editar</button></a>
+                        <button class="btn btn-danger" @onclick="@(() => DeleteUserAula(item.Key))">Deletar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+    private List<RegisterModel> users = new List<RegisterModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var retUsers = await Http.GetFromJsonAsync<List<RegisterModel>>("/v1/User");
+
+        foreach (var item in retUsers)
+        {
+            users.Add(item);
+        }
+    }
+
+    private async Task DeleteUserAula(int id)
+    {
+        await Http.DeleteAsync("/v1/User/" + id);
+        NavigationManager.NavigateTo("Genero/ListUser", true);
+    }
+
+}

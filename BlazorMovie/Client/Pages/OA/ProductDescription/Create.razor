@@ -1,0 +1,43 @@
+﻿@page "/OA/ProductDescription/Create"
+@using System.Net.Http
+@inject HttpClient http
+@inject NavigationManager NavigationManager
+
+<h3>Cadastro de Status de Compra</h3>
+
+<EditForm Model="@productsPurchaseStatus" OnValidSubmit="CreateProductsPurchaseStatus" @onreset="HandleReset">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <br />
+        <div class="row col-12">
+            <div class="col-5">
+                <label>Descrição</label>
+                <InputText class="form-control" @bind-Value="@productsPurchaseStatus.Description"></InputText>
+                <ValidationMessage For="@(() => productsPurchaseStatus.Description)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="row col-12 d-flex justify-content-center">
+            <button class="btn btn-success" type="submit" style="margin-right:10px;">Salvar</button>
+            <button class="btn btn-secondary" type="reset">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private string URL = "/v1/OA/ProductsPurchaseStatusOA";
+    private ProductPurchaseStatusOA productsPurchaseStatus = new ProductPurchaseStatusOA();
+    private EditContext editContext;
+
+    private async Task CreateProductsPurchaseStatus()
+    {
+        var productDescriptionCreate = await http.PostAsJsonAsync(URL, productsPurchaseStatus);
+        NavigationManager.NavigateTo("OA/ProductsPurchaseStatus");
+    }
+
+    private void HandleReset()
+    {
+        productsPurchaseStatus = new ProductPurchaseStatusOA();
+        editContext = new EditContext(productsPurchaseStatus);
+        NavigationManager.NavigateTo("OA/ProductsPurchaseStatus");
+    }
+}

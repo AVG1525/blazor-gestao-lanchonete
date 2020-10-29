@@ -1,0 +1,45 @@
+﻿@page "/OA/ProductsPurchaseStatus"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Lista de Status de Compra</h3>
+
+<div>
+    <br />
+    <a href="/OA/ProductPurchaseStatus/Create"><button class="btn btn-success">Criar Novo Status de Compra</button></a>
+</div>
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in productsPurchaseStatus)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Description</td>
+                    <td>
+                        <a href="/OA/ProductPurchaseStatus/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private string URL = "/v1/OA/ProductPurchaseStatusOA";
+    private List<ProductPurchaseStatusOA> productsPurchaseStatus = new List<ProductPurchaseStatusOA>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        productsPurchaseStatus = await Http.GetFromJsonAsync<List<ProductPurchaseStatusOA>>(URL);
+    }
+}

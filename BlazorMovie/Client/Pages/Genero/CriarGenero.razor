@@ -1,0 +1,26 @@
+﻿@page "/Genero/Criar"
+
+<h3>Adicionar Gêneros - O Resultado Estará no Console</h3>
+
+<EditForm Model="genero" OnValidSubmit="CreateAula">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Gênero:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@genero.Name"></InputText>
+            <ValidationMessage For="@(() => genero.Name)"></ValidationMessage>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit">Salvar</button>
+</EditForm>
+
+
+@code {
+    GeneroUsuario genero = new GeneroUsuario();
+    private void CreateAula()
+    {
+        Console.WriteLine(genero.Name);
+
+        this.genero.Name = "";
+    }
+}

@@ -1,0 +1,41 @@
+﻿@page "/OA/ListSales"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Lista de Vendas</h3>
+
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Produto</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in sales)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.UserOA.Name</td>
+                    <td>@item.ProductOA.Name</td>
+                    <td>@item.ProductPurchaseStatusOA.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private string URL = "/v1/OA/SaleOA";
+    private List<SaleOA> sales = new List<SaleOA>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        sales = await Http.GetFromJsonAsync<List<SaleOA>>(URL);
+    }
+}

@@ -1,0 +1,91 @@
+﻿@page "/Genero/Registration"
+@using System.Net.Http
+@inject HttpClient http
+@inject NavigationManager NavigationManager
+
+<h3>Registrar um Produto</h3>
+
+<EditForm Model="@register" OnValidSubmit="CreateUserAula" @onreset="HandleReset">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <br />
+        <div class="row col-12">
+            <div class="col-2">
+                <label>Title</label>
+                <InputSelect class="form-control" @bind-Value="@register.Title">
+                    <option value="">Selecione...</option>
+                    <option value="mr">Mr</option>
+                    <option value="ms">Ms</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => register.Title)"></ValidationMessage>
+            </div>
+            <div class="col-5">
+                <label>First Name</label>
+                <InputText class="form-control" @bind-Value="@register.FirstName"></InputText>
+                <ValidationMessage For="@(() => register.FirstName)"></ValidationMessage>
+            </div>
+            <div class="col-5">
+                <label>Last Name</label>
+                <InputText class="form-control" @bind-Value="@register.LastName"></InputText>
+                <ValidationMessage For="@(() => register.LastName)"></ValidationMessage>
+            </div>
+        </div>
+        <br />
+        <div class="row col-12">
+            <div class="col-6">
+                <label>Date of Birth</label>
+                <InputDate class="form-control" @bind-Value="@register.DateBirth"></InputDate>
+                <ValidationMessage For="@(() => register.DateBirth)"></ValidationMessage>
+            </div>
+            <div class="col-6">
+                <label>E-mail</label>
+                <InputText class="form-control" @bind-Value="@register.Email"></InputText>
+                <ValidationMessage For="@(() => register.Email)"></ValidationMessage>
+            </div>
+        </div>
+        <br />
+        <div class="row col-12">
+            <div class="col-6">
+                <label>Password</label>
+                <InputText class="form-control" type="password" @bind-Value="@register.Password"></InputText>
+                <ValidationMessage For="@(() => register.Password)"></ValidationMessage>
+            </div>
+            <div class="col-6">
+                <label>Confirm Password</label>
+                <InputText class="form-control" type="password" @bind-Value="@register.ConfirmPassword"></InputText>
+                <ValidationMessage For="@(() => register.ConfirmPassword)"></ValidationMessage>
+            </div>
+        </div>
+        <br />
+        <div>
+            <div class="container-fluid">
+                <InputCheckbox class="form-check-input" @bind-Value="@register.AcceptTerms"></InputCheckbox>
+                <ValidationMessage For="@(() => register.AcceptTerms)"></ValidationMessage>
+                <label>Accept Terms & Conditions</label>
+            </div>
+        </div>
+        <br />
+        <div class="row col-12 d-flex justify-content-center">
+            <button class="btn btn-success" type="submit" style="margin-right:10px;">Salvar</button>
+            <button class="btn btn-secondary" type="reset">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    private RegisterModel register = new RegisterModel();
+    private EditContext editContext;
+
+    private async Task CreateUserAula()
+    {
+        var retUserCreate = await http.PostAsJsonAsync("/v1/User", register);
+        NavigationManager.NavigateTo("Genero/ListUser");
+    }
+
+    private void HandleReset()
+    {
+        register = new RegisterModel();
+        editContext = new EditContext(register);
+    }
+}

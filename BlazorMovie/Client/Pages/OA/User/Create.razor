@@ -1,0 +1,48 @@
+﻿@page "/OA/User/Create"
+@using System.Net.Http
+@inject HttpClient http
+@inject NavigationManager NavigationManager
+
+<h3>Cadastro de Usuário</h3>
+
+<EditForm Model="@user" OnValidSubmit="CreateUser" @onreset="HandleReset">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <br />
+        <div class="row col-12">
+            <div class="col-5">
+                <label>Nome</label>
+                <InputText class="form-control" @bind-Value="@user.Name"></InputText>
+                <ValidationMessage For="@(() => user.Name)"></ValidationMessage>
+            </div>
+            <div class="col-5">
+                <label>Telefone</label>
+                <InputText class="form-control" @bind-Value="@user.Telephone"></InputText>
+                <ValidationMessage For="@(() => user.Telephone)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="row col-12 d-flex justify-content-center">
+            <button class="btn btn-success" type="submit" style="margin-right:10px;">Salvar</button>
+            <button class="btn btn-secondary" type="reset">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private string URL = "/v1/OA/UserOA";
+    private UserOA user = new UserOA();
+    private EditContext editContext;
+
+    private async Task CreateUser()
+    {
+        var userCreate = await http.PostAsJsonAsync(URL, user);
+        NavigationManager.NavigateTo("OA/Users");
+    }
+
+    private void HandleReset()
+    {
+        user = new UserOA();
+        editContext = new EditContext(user);
+        NavigationManager.NavigateTo("OA/Users");
+    }
+}

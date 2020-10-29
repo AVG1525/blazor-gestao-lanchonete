@@ -1,0 +1,54 @@
+﻿@page  "/Product/ListProduct"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Lista de Produtos</h3>
+
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Preço</th>
+                <th scope="col">Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in products)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@String.Format("{0, 0:C2}", @item.Price)</td>
+                    <td>@item.Description</td>
+                    <td>
+                        <a href="/Product/EditProduct/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                        <button class="btn btn-danger" @onclick="@(() => DeleteProductAula(item.Id))">Deletar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+    private List<Product> products = new List<Product>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var retProducts = await Http.GetFromJsonAsync<List<Product>>("/v1/Product");
+        foreach (var item in retProducts)
+        {
+            products.Add(item);
+        }
+    }
+
+    private async Task DeleteProductAula(int id)
+    {
+        await Http.DeleteAsync("/v1/Product/" + id);
+        NavigationManager.NavigateTo("Product/ListProduct", true);
+    }
+
+}

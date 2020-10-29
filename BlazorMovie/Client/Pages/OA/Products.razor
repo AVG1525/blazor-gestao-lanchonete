@@ -1,0 +1,61 @@
+﻿@page "/OA/Products"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Lista de Produtos</h3>
+
+<div>
+    <br />
+    <a href="/OA/Product/Create"><button class="btn btn-success">Criar Novo Produto</button></a>
+</div>
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Preço</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in products)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.ProductDescriptionOA.Description</td>
+                    <td>
+                        <a href="/OA/Product/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                        <button class="btn btn-danger" @onclick="@(() => DeleteUser(item.Id))">Deletar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private string URL = "/v1/OA/ProductOA";
+    private List<ProductOA> products = new List<ProductOA>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var retProducts = await Http.GetFromJsonAsync<List<ProductOA>>(URL);
+
+        foreach (var item in retProducts)
+        {
+            products.Add(item);
+        }
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        await Http.DeleteAsync($"{URL}/{id}");
+        NavigationManager.NavigateTo("OA/Products", true);
+    }
+}

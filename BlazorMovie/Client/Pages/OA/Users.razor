@@ -1,0 +1,59 @@
+﻿@page "/OA/Users"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Lista de Usuários</h3>
+
+<div>
+    <br />
+    <a href="/OA/User/Create"><button class="btn btn-success">Criar Novo Usuário</button></a>
+</div>
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Telefone</th>
+                <th scope="col">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in users)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Telephone</td>
+                    <td>
+                        <a href="/OA/User/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                        <button class="btn btn-danger" @onclick="@(() => DeleteUser(item.Id))">Deletar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private string URL = "/v1/OA/UserOA";
+    private List<UserOA> users = new List<UserOA>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var retUsers = await Http.GetFromJsonAsync<List<UserOA>>(URL);
+
+        foreach (var item in retUsers)
+        {
+            users.Add(item);
+        }
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        await Http.DeleteAsync($"{URL}/{id}");
+        NavigationManager.NavigateTo("OA/Users", true);
+    }
+}

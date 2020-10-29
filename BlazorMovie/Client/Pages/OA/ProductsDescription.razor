@@ -1,0 +1,45 @@
+﻿@page "/OA/ProductsDescription"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Descrição de Produtos</h3>
+
+<div>
+    <br />
+    <a href="/OA/ProductDescription/Create"><button class="btn btn-success">Criar Nova Descrição Produto</button></a>
+</div>
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in productsDescription)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Description</td>
+                    <td>
+                        <a href="/OA/ProductDescription/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private string URL = "/v1/OA/ProductDescriptionOA";
+    private List<ProductDescriptionOA> productsDescription = new List<ProductDescriptionOA>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        productsDescription = await Http.GetFromJsonAsync<List<ProductDescriptionOA>>(URL);
+    }
+}

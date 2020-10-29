@@ -1,0 +1,54 @@
+﻿@page  "/Product/RegisterProduct"
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Registrar um Produto</h3>
+
+<EditForm Model="@product" OnValidSubmit="CreateProductAula" @onreset="HandleReset">
+    <DataAnnotationsValidator />
+
+    <div class="form-row">
+        <div class="form-group col">
+            <label>Nome</label>
+            <InputText @bind-Value="product.Name" class="form-control" />
+            <ValidationMessage For="@(() => product.Name)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            <label>Preço</label>
+            <InputNumber @bind-Value="product.Price" @bind-Value:format="F2" class="form-control" />
+            <ValidationMessage For="@(() => product.Price)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col">
+            <label>Descrição</label>
+            <InputText @bind-Value="product.Description" class="form-control" />
+            <ValidationMessage For="@(() => product.Description)" />
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary mr-1">Salvar</button>
+        <button type="reset" class="btn btn-secondary">Cancelar</button>
+    </div>
+</EditForm>
+
+@code {
+    private Product product = new Product();
+    private EditContext editContext { get; set; }
+
+    private async Task CreateProductAula()
+    {
+        var teste = await Http.PostAsJsonAsync("/v1/Product", product);
+        NavigationManager.NavigateTo("Product/ListProduct");
+
+    }
+
+    private void HandleReset()
+    {
+        product = new Product();
+        editContext = new EditContext(product);
+    }
+}
