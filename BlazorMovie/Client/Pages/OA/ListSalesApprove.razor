@@ -46,7 +46,14 @@
 
     private async Task Approve(int id)
     {
-        var saleApproved = sales[(id - 1)];
+        SaleOA saleApproved = new SaleOA();
+
+        foreach(var sale in sales)
+        {
+            if (sale.Id.Equals(id))
+                saleApproved = sale;
+        }
+
         saleApproved.ProductPurchaseStatusOAId = 2;
         await Http.PutAsJsonAsync(URL, saleApproved);
         NavigationManager.NavigateTo("OA/ListSales");

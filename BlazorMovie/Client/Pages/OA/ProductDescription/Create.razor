@@ -24,20 +24,20 @@
 </EditForm>
 
 @code {
-    private string URL = "/v1/OA/ProductsPurchaseStatusOA";
+    private string URL = "/v1/OA/ProductDescriptionOA";
     private ProductPurchaseStatusOA productsPurchaseStatus = new ProductPurchaseStatusOA();
     private EditContext editContext;
 
     private async Task CreateProductsPurchaseStatus()
     {
         var productDescriptionCreate = await http.PostAsJsonAsync(URL, productsPurchaseStatus);
-        NavigationManager.NavigateTo("OA/ProductsPurchaseStatus");
+        NavigationManager.NavigateTo("OA/ProductsDescription");
     }
 
     private void HandleReset()
     {
         productsPurchaseStatus = new ProductPurchaseStatusOA();
         editContext = new EditContext(productsPurchaseStatus);
-        NavigationManager.NavigateTo("OA/ProductsPurchaseStatus");
+        NavigationManager.NavigateTo("OA/ProductsDescription");
     }
 }
