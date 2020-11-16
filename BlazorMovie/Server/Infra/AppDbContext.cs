@@ -1,4 +1,5 @@
 ﻿using BlazorMovie.Shared.Model;
+using BlazorMovie.Shared.Model.ModelBuilderExtensions;
 using BlazorMovie.Shared.Model.OA;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,20 +24,8 @@ namespace BlazorMovie.Server.Infra
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SaleOA>()
-                .HasOne(pt => pt.UserOA)
-                    .WithMany(p => p.SaleOA)
-                        .HasForeignKey(pt => pt.UserOAId);
-
-            modelBuilder.Entity<SaleOA>()
-                .HasOne(pt => pt.ProductOA)
-                    .WithMany(p => p.SaleOA)
-                        .HasForeignKey(pt => pt.ProductOAId);
-
-            modelBuilder.Entity<SaleOA>()
-                .HasOne(pt => pt.ProductPurchaseStatusOA)
-                    .WithMany(p => p.SaleOA)
-                        .HasForeignKey(pt => pt.ProductPurchaseStatusOAId);
+            modelBuilder.RelationshipMToN();
+            modelBuilder.Seed();
         }
     }
 }
