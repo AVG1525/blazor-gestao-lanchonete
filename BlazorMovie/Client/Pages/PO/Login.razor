@@ -1,40 +1,54 @@
 ﻿@page "/PO/Login"
-@using System.Net.Http
-@inject HttpClient Http
+@inject IAuthService authService;
 @inject NavigationManager NavigationManager
 
+@if (ShowErrors)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
 
-    <EditForm Model="@login" OnValidSubmit="SubmitLogin" @onreset="HandleReset">
-        <div class="card-body myalign" style="margin-top: 10em;">
-            @*<div class="col-5"></div>*@
-            <div>
-                <div class="d-flex">
-                    <span class="oi oi-person myicon" aria-hidden="true"></span>
+<EditForm Model="@login" OnValidSubmit="SubmitLogin" @onreset="HandleReset">
+    <div class="card-body myalign" style="margin-top: 10em;">
+        @*<div class="col-5"></div>*@
+        <div>
+            <div class="d-flex">
+                <span class="oi oi-person myicon" aria-hidden="true"></span>
 
-                    <InputText class="form-control" Placeholder="Digite seu usuario" @bind-Value="@login.Username"></InputText>
-                </div>
-                <div class="d-flex">
-                    <span class="oi oi-lock-locked myicon" aria-hidden="true"></span>
-                    <InputText class="form-control" Placeholder="Digite sua senha" @bind-Value="@login.Password"></InputText>
-                </div>
-                <br />
-                <div class="myalign">
-                    <button class="btn btn-success" type="submit" style="margin-right:10px;">Login</button>
-                </div>
+                <InputText class="form-control" Placeholder="Digite seu usuario" @bind-Value="@login.Username"></InputText>
+            </div>
+            <div class="d-flex">
+                <span class="oi oi-lock-locked myicon" aria-hidden="true"></span>
+                <InputText class="form-control" Placeholder="Digite sua senha" @bind-Value="@login.Password"></InputText>
+            </div>
+            <br />
+            <div class="myalign">
+                <button class="btn btn-success" type="submit" style="margin-right:10px;">Login</button>
             </div>
         </div>
-    </EditForm>
+    </div>
+</EditForm>
 
 @code {
-    private string URL = "/v1/PO/Login";
+        //private string URL = "/v1/PO/Login";
     private LoginPO login = new LoginPO();
     private EditContext editContext;
-
+    private bool ShowErrors;
+    private string Error = "";
 
     private async Task SubmitLogin()
     {
-        var userCreate = await Http.PostAsJsonAsync(URL, login);
-        NavigationManager.NavigateTo("OA/Users");
+        ShowErrors = false;
+        var result = await authService.Login(login);
+
+        if (result.Successful)
+        {
+            NavigationManager.NavigateTo("OA/Users");
+        } else {
+            Error = result.Error;
+            ShowErrors = true;
+        }
     }
 
     private void HandleReset()
@@ -50,6 +64,7 @@
         display: flex;
         justify-content: center;
     }
+
     .myicon {
         margin: auto;
         padding: 0.50em;

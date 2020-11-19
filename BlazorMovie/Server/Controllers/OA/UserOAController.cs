@@ -1,5 +1,6 @@
 ﻿using BlazorMovie.Server.Infra;
 using BlazorMovie.Shared.Model.OA;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
