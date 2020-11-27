@@ -3,35 +3,37 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<h3>Lista de Status de Compra</h3>
+    <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+        <h3>Lista de Status de Compra</h3>
 
-<div>
-    <br />
-    <a href="/OA/ProductPurchaseStatus/Create"><button class="btn btn-success">Criar Novo Status de Compra</button></a>
-</div>
-<div class="card-body">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Opções</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in productsPurchaseStatus)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Description</td>
-                    <td>
-                        <a href="/OA/ProductPurchaseStatus/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        <div>
+            <br />
+            <a href="/OA/ProductPurchaseStatus/Create"><button class="btn btn-success">Criar Novo Status de Compra</button></a>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in productsPurchaseStatus)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <a href="/OA/ProductPurchaseStatus/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
 
 @code {
     private string URL = "/v1/OA/ProductPurchaseStatusOA";

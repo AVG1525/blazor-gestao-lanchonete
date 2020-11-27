@@ -43,11 +43,16 @@
         </li>
 
         <li class="nav-item px-3">
-
+            <NavLink class="nav-link" href="/PO/Register" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> OA/PO - REGISTER
+            </NavLink>
             <NavLink class="nav-link" href="/PO/Login" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> OA/PO - Lanchonete do Zé
+                <span class="oi oi-home" aria-hidden="true"></span> OA/PO - LOGIN
             </NavLink>
             <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+                <NavLink class="nav-link" href="/PO/Logout" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> OA/PO - LOGOUT
+                </NavLink>
                 <ul class="nav flex-column">
                     <li class="nav-item px-3 px-">
                         <NavLink class="nav-link" href="/OA/Purchase" Match=@NavLinkMatch.All>

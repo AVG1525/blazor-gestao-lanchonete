@@ -3,59 +3,61 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<h3>Lista de Vendas para Aprovar</h3>
+    <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+        <h3>Lista de Vendas para Aprovar</h3>
 
-<div class="card-body">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Nome</th>
-                <th scope="col">Produto</th>
-                <th scope="col">Status</th>
-                <th scope="col">Opções</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in sales)
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Produto</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in sales)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.UserOA.Name</td>
+                            <td>@item.ProductOA.Name</td>
+                            <td>@item.ProductPurchaseStatusOA.Description</td>
+                            <td>
+                                <button class="btn btn-success" @onclick="@(() => Approve(item.Id))">Aprovar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+        @code {
+            private string URL = "/v1/OA/SaleOA";
+            private List<SaleOA> sales = new List<SaleOA>();
+
+            protected override async Task OnInitializedAsync()
             {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.UserOA.Name</td>
-                <td>@item.ProductOA.Name</td>
-                <td>@item.ProductPurchaseStatusOA.Description</td>
-                <td>
-                    <button class="btn btn-success" @onclick="@(() => Approve(item.Id))">Aprovar</button>
-                </td>
-            </tr>
+
+                sales = await Http.GetFromJsonAsync<List<SaleOA>>(URL + "/ToApprove");
             }
-        </tbody>
-    </table>
-</div>
-
-@code {
-    private string URL = "/v1/OA/SaleOA";
-    private List<SaleOA> sales = new List<SaleOA>();
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        sales = await Http.GetFromJsonAsync<List<SaleOA>>(URL+"/ToApprove");
-    }
 
 
-    private async Task Approve(int id)
-    {
-        SaleOA saleApproved = new SaleOA();
+            private async Task Approve(int id)
+            {
+                SaleOA saleApproved = new SaleOA();
 
-        foreach(var sale in sales)
-        {
-            if (sale.Id.Equals(id))
-                saleApproved = sale;
+                foreach (var sale in sales)
+                {
+                    if (sale.Id.Equals(id))
+                        saleApproved = sale;
+                }
+
+                saleApproved.ProductPurchaseStatusOAId = 2;
+                await Http.PutAsJsonAsync(URL, saleApproved);
+                NavigationManager.NavigateTo("OA/ListSales");
+            }
         }
-
-        saleApproved.ProductPurchaseStatusOAId = 2;
-        await Http.PutAsJsonAsync(URL, saleApproved);
-        NavigationManager.NavigateTo("OA/ListSales");
-    }
-}

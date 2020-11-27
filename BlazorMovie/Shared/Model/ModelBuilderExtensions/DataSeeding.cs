@@ -6,8 +6,15 @@ namespace BlazorMovie.Shared.Model.ModelBuilderExtensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Post>().HasData(
-            //    new { BlogId = 1, PostId = 2, Title = "Second post", Content = "Test 2" });
+            //modelBuilder.Entity<ProductDescriptionOA>().HasData(
+            //    new ProductDescriptionOA { Description = "BEBIDA" });
+            //modelBuilder.Entity<ProductDescriptionOA>().HasData(
+            //    new ProductDescriptionOA { Description = "LANCHE" });
+            
+            //modelBuilder.Entity<ProductPurchaseStatusOA>().HasData(
+            //    new ProductPurchaseStatusOA { Description = "AGUARDE" });
+            //modelBuilder.Entity<ProductPurchaseStatusOA>().HasData(
+            //    new ProductPurchaseStatusOA { Description = "CONFIRMADO" });
         }
     }
 }

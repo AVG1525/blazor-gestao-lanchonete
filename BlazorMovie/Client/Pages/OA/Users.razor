@@ -3,38 +3,41 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<h3>Lista de Usuários</h3>
 
-<div>
-    <br />
-    <a href="/OA/User/Create"><button class="btn btn-success">Criar Novo Usuário</button></a>
-</div>
-<div class="card-body">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Nome</th>
-                <th scope="col">Telefone</th>
-                <th scope="col">Opções</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in users)
-            {
+
+<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+    <h3>Lista de Usuários</h3>
+    <div>
+        <br />
+        <a href="/OA/User/Create"><button class="btn btn-success">Criar Novo Usuário</button></a>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@item.Telephone</td>
-                    <td>
-                        <a href="/OA/User/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
-                        <button class="btn btn-danger" @onclick="@(() => DeleteUser(item.Id))">Deletar</button>
-                    </td>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Telefone</th>
+                    <th scope="col">Opções</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var item in users)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Telephone</td>
+                        <td>
+                            <a href="/OA/User/Edit/@item.Id.ToString()"><button class="btn btn-success">Editar</button></a>
+                            <button class="btn btn-danger" @onclick="@(() => DeleteUser(item.Id))">Deletar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
 
 @code {
     private string URL = "/v1/OA/UserOA";

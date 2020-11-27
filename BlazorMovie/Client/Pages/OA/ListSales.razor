@@ -2,32 +2,33 @@
 @using System.Net.Http
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+    <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+        <h3>Lista de Vendas</h3>
 
-<h3>Lista de Vendas</h3>
-
-<div class="card-body">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Nome</th>
-                <th scope="col">Produto</th>
-                <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in sales)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.UserOA.Name</td>
-                    <td>@item.ProductOA.Name</td>
-                    <td>@item.ProductPurchaseStatusOA.Description</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Produto</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in sales)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.UserOA.Name</td>
+                            <td>@item.ProductOA.Name</td>
+                            <td>@item.ProductPurchaseStatusOA.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
 
 @code {
     private string URL = "/v1/OA/SaleOA";
